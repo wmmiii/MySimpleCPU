@@ -14,7 +14,8 @@ module.exports = {
   ],
   rules: {
     'comma-dangle': ['error', 'always-multiline'],
-    'semi': 'error',
     'import/order': ['error', {"newlines-between": "always-and-inside-groups"}],
+    "eol-last": "error",
+    'semi': 'error',
   }
 };

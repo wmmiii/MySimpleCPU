@@ -42,6 +42,9 @@ module.exports = {
     }),
     new VueLoaderPlugin(),
   ],
+  resolve: {
+    extensions: ['.js', '.ts', '.vue'],
+  },
   watch: true,
   watchOptions: {
     poll: 1000,
