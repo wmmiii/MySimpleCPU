@@ -16,9 +16,9 @@ module.exports = {
         loader: 'ts-loader',
         options: {
           appendTsSuffixTo: [/\.vue$/],
-        }
+        },
       },
-    ]
+    ],
   },
   output: {
     filename: 'index.js',
@@ -30,4 +30,8 @@ module.exports = {
     }),
     new VueLoaderPlugin(),
   ],
+  watch: true,
+  watchOptions: {
+    poll: 1000,
+  },
 };
