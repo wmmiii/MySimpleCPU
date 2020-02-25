@@ -1,12 +1,17 @@
 <template>
   <div>
     <h1>{{title}}</h1>
+    <program />
     <registers />
+    <memory />
   </div>
 </template>
 <script lang="ts">
 import { reactive, defineComponent } from '@vue/composition-api';
-import registers from './registers.vue';
+
+import memory from './Memory.vue';
+import program from './Program.vue';
+import registers from './Registers.vue';
 
 export default defineComponent({
   name: 'app',
@@ -17,7 +22,11 @@ export default defineComponent({
 
     return state;
   },
-  components: {registers }
+  components: {
+    registers,
+    program,
+    memory,
+  }
 });
 </script>
 <style scoped>

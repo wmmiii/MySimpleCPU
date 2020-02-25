@@ -1,14 +1,15 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-Vue.use(Vuex);
+export const NUM_REGISTERS = 8;
+export const MEM_SIZE = 1024;
 
-const NUM_REGISTERS = 8;
-const MEM_SIZE = 1024;
+Vue.use(Vuex);
 
 const state = {
   registers: <number[]>[],
   memory: <number[]>[],
+  programCounter: 0,
 };
 
 for (let i = 0; i < NUM_REGISTERS; i++) {
@@ -29,6 +30,15 @@ export default new Vuex.Store({
   mutations: {
     setRegister(state, payload: SetValuePayload) {
       Vue.set(state.registers, payload.index, payload.value);
+    },
+    setMemory(state, payload: SetValuePayload) {
+      Vue.set(state.memory, payload.index, payload.value);
+    },
+    setProgramCounter(state, address: number) {
+      state.programCounter = address;
+    },
+    incrementProgramCounter(state) {
+      state.programCounter++;
     }
   }
 });
