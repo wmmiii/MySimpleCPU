@@ -11,20 +11,24 @@ export function assemble(program: string): number[] {
   const binary: number[] = [];
   const lines = program.split('\n');
   for (let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
-    const line = lines[lineNumber].trim();
-    if (line.length == 0) {
-      continue;
-    }
-    const args = line.split(' ');
-    const [opcode, instruction] = instructionMap[args[0]];
-    if (instruction == null) {
-      throw `Unrecognized instruction: ${args[0]}`;
-    }
-    args.splice(0, 1);
-    let encoded = encodeArguments(args, instruction.arguments);
+    try {
+      const line = lines[lineNumber].trim();
+      if (line.length == 0) {
+        continue;
+      }
+      const args = line.split(' ');
+      const [opcode, instruction] = instructionMap[args[0]];
+      if (instruction == null) {
+        throw `Unrecognized instruction: ${args[0]}`;
+      }
+      args.splice(0, 1);
+      let encoded = encodeArguments(args, instruction.arguments);
 
-    encoded += (opcode << (0x8 * 0x3));
-    binary.push(encoded);
+      encoded += (opcode << (0x8 * 0x3));
+      binary.push(encoded);
+    } catch (error) {
+      throw `Line ${lineNumber}: ${error}`;
+    }
   }
   return binary;
 }
