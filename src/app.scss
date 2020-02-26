@@ -1,6 +1,20 @@
 @import 'constants';
 
 body {
-  background-color: $body-background;
-  color: $body-color;
+  background-color: $background;
+  color: $text-color;
+  font-family: sans-serif;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+button {
+  background-color: $interactive-color;
+  border-radius: 0.5rem;
+  border: none;
+  box-shadow: 0 $shadow-offset $shadow-width $shadow-color;
+  padding: 1rem;
+  cursor: pointer;
 }

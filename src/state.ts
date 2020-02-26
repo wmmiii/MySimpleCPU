@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 export const NUM_REGISTERS = 8;
-export const MEM_SIZE = 1024;
+export const MEM_SIZE = 128;
 
 Vue.use(Vuex);
 

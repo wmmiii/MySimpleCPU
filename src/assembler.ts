@@ -17,7 +17,7 @@ export function assemble(program: string): number[] {
     const args = line.split(' ');
     const instruction = instructionMap[args[0]];
     if (instruction == null) {
-      throw `Unrecognized instruction at line ${lineNumber}: ${args[0]}`;
+      throw `${lineNumber}: Unrecognized instruction: ${args[0]}`;
     }
     let encoded = instruction.encodeArguments(args.slice(1));
     encoded += (instruction.opcode << (0x8 * 0x3));

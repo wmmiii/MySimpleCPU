@@ -1,9 +1,11 @@
 <template>
   <div>
     <h1>{{title}}</h1>
-    <program />
-    <registers />
-    <memory />
+    <div class="container">
+      <program />
+      <registers />
+      <memory />
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -29,6 +31,14 @@ export default defineComponent({
   }
 });
 </script>
-<style scoped>
+<style lang="scss" scoped>
+.container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
 
+  & > div {
+    flex: 1;
+  }
+}
 </style>

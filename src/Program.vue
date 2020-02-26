@@ -2,7 +2,8 @@
   <div>
     <h2>Program</h2>
     <textarea v-model="programText"></textarea>
-    <button @click="execute">Execute</button>
+    <div v-if="error" class="error">{{error}}</div>
+    <button @click="load">Load</button>
   </div>
 </template>
 <script lang="ts">
@@ -16,22 +17,36 @@ export default defineComponent({
   setup() {
     const state = reactive({
       programText: 'LD 0 1',
+      error: undefined,
     });
 
-    function execute() {
-      console.log(state.programText);
-      const binary = assemble(state.programText);
-      console.log(binary);
-      loadProgram(binary);
+    function load() {
+      try {
+        loadProgram(assemble(state.programText));
+        state.error = undefined;
+      } catch (error) {
+        state.error = error;
+      }
     }
 
     return {
       ...toRefs(state),
-      execute
+      load
     };
   },
 });
 </script>
-<style scoped>
+<style lang="scss" scoped>
+@import 'constants';
 
+button {
+  display: block;
+}
+
+.error {
+  background-color: $background-inverse;
+  border-radius: $border-radius;
+  color: $background;
+  padding: 0.5rem;
+}
 </style>
