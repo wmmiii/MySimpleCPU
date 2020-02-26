@@ -1,50 +1,65 @@
 import state from './state';
 
+export enum ArgumentType {
+  Immediate = 'val',
+  Memory = 'mem',
+  Register = 'reg',
+}
+
 export interface Instruction {
   symbol: string;
-  usage: string;
-  opcode: number;
-  encodeArguments(args: string[]): number;
-  execute(args: number): void;
+  description: string;
+  arguments: ArgumentType[];
+  execute(args: number[]): void;
 }
 
 export const instructions: Instruction[] = [
   {
     symbol: 'NOP',
-    usage: 'NOP',
-    opcode: 0x00,
-    encodeArguments(args: string[]): number {
-      if (args.length > 2) {
-        throw 'Incorrect number of arguments!';
-      }
-      return 0x00;
-    },
-    execute(_: number): void {}
+    description: 'Does not perform any operation.',
+    arguments: [],
+    execute(): void {}
+  },
+  {
+    symbol: 'SET',
+    description: 'Sets an immediate value into a register.',
+    arguments: [ArgumentType.Immediate, ArgumentType.Register],
+    execute(args: number[]): void {
+      const value = args[0];
+      const register = args[1];
+      state.commit('setRegister', {index: register, value: value});
+    }
   },
   {
     symbol: 'LD',
-    usage: 'LD memory register',
-    opcode: 0x01,
-    encodeArguments(args: string[]): number {
-      const intArgs = args.map((arg) => parseInt(arg));
-      if (intArgs.length != 2) {
-        throw 'Incorrect number of arguments!';
-      }
-      return asPosition(0, intArgs[0]) + asPosition(1, intArgs[1]);
-    },
-    execute(args: number): void {
-      const memory = fromPosition(0, args);
-      const register = fromPosition(1, args);
+    description: 'Loads a value from a memory address into a register.',
+    arguments: [ArgumentType.Memory, ArgumentType.Register],
+    execute(args: number[]): void {
+      const memory = args[0];
+      const register = args[1];
       const value = state.state.memory[memory];
       state.commit('setRegister', {index: register, value: value});
     }
+  },
+  {
+    symbol: 'STR',
+    description: 'Stores a value from a register to a memory address.',
+    arguments: [ArgumentType.Register, ArgumentType.Memory],
+    execute(args: number[]): void {
+      const register = args[0];
+      const memory = args[1];
+      const value = state.state.registers[register];
+      state.commit('setMemory', {index: memory, value: value});
+    }
+  },
+  {
+    symbol: 'ADD',
+    description: 'Adds the values of two registers and stores them into the third.',
+    arguments: [ArgumentType.Register, ArgumentType.Register, ArgumentType.Register],
+    execute(args: number[]): void {
+      const a = state.state.registers[args[0]];
+      const b = state.state.registers[args[1]];
+      state.commit('setRegister', {index: args[2], value: a + b});
+    }
   }
 ];
-
-function asPosition(index: number, arg: number) {
-  return (arg & 0xFF) << (0x8 * index);
-}
-
-function fromPosition(index: number, args: number) {
-  return args >> (0x8 * index) & 0xFF;
-}

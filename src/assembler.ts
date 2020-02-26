@@ -1,9 +1,10 @@
-import { Instruction, instructions } from "./instructions";
+import { Instruction, instructions, ArgumentType } from "./instructions";
 
-const instructionMap: {[symbol: string]: Instruction} = {};
+const instructionMap: {[symbol: string]: [number, Instruction]} = {};
 
-for (let instruction of instructions) {
-  instructionMap[instruction.symbol] = instruction;
+for (let i = 0; i < instructions.length; i++) {
+  const instruction = instructions[i];
+  instructionMap[instruction.symbol] = [i, instruction];
 }
 
 export function assemble(program: string): number[] {
@@ -15,13 +16,33 @@ export function assemble(program: string): number[] {
       continue;
     }
     const args = line.split(' ');
-    const instruction = instructionMap[args[0]];
+    const [opcode, instruction] = instructionMap[args[0]];
     if (instruction == null) {
-      throw `${lineNumber}: Unrecognized instruction: ${args[0]}`;
+      throw `Unrecognized instruction: ${args[0]}`;
     }
-    let encoded = instruction.encodeArguments(args.slice(1));
-    encoded += (instruction.opcode << (0x8 * 0x3));
+    args.splice(0, 1);
+    let encoded = encodeArguments(args, instruction.arguments);
+
+    encoded += (opcode << (0x8 * 0x3));
     binary.push(encoded);
   }
   return binary;
+}
+
+function encodeArguments(args: string[], types: ArgumentType[]): number {
+  if (args.length != types.length) {
+    throw `Incorrect number of arguments: got ${args.length}, expected ${types.length}`;
+  }
+
+  let encoded = 0;
+
+  for (let i = 0; i < types.length; i++) {
+    const arg = parseInt(args[i], 16);
+    if (arg > 0xFF || arg < 0) {
+      throw `Argument must be in the range 0x00 to 0xFF: ${arg}`;
+    }
+    encoded += (arg << (0x8 * i));
+  }
+
+  return encoded;
 }

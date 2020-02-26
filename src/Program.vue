@@ -4,13 +4,16 @@
     <textarea v-model="programText"></textarea>
     <div v-if="error" class="error">{{error}}</div>
     <button @click="load">Load</button>
+    <button @click="step">Step</button>
+    <instructions />
   </div>
 </template>
 <script lang="ts">
 import { reactive, defineComponent, toRefs } from '@vue/composition-api';
 
 import { assemble } from './assembler';
-import { loadProgram } from './cpu';
+import { loadProgram, step } from './cpu';
+import instructions from './Instructions.vue';
 
 export default defineComponent({
   name: 'program',
@@ -31,9 +34,11 @@ export default defineComponent({
 
     return {
       ...toRefs(state),
-      load
+      load,
+      step: () => step()
     };
   },
+  components: {instructions}
 });
 </script>
 <style lang="scss" scoped>
